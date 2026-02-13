@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NWB | Relatório - Growth Supplements</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,700&display=swap');
+
+        :root {
+            --growth-red: #DA251D;
+            --growth-dark: #121212;
+            --growth-blue: #0F172A;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F8F9FA;
+            color: #333;
+        }
+
+        .text-growth-red { color: var(--growth-red); }
+        .bg-growth-red { background-color: var(--growth-red); }
+
+        .section-title {
+            border-left: 5px solid var(--growth-red);
+            padding-left: 15px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #111;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 25px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card.hoverable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            border-color: var(--growth-red);
+        }
+
+        /* Card Escuro (Aprendizados) */
+        .card-dark {
+            background-color: #1a1a1a;
+            color: #e5e5e5;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card-dark:hover {
+            border-color: #444;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Tabs de Plataforma */
+        .platform-tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            font-weight: 700;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .platform-tab.active {
+            color: var(--growth-red);
+            border-bottom: 3px solid var(--growth-red);
+        }
+        .stat-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-container {
+            background: white;
+            border-radius: 8px;
+            max-width: 900px;
+            width: 95%;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .modal-header {
+            background-color: #111827;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            display: flex;
+            height: 500px;
+        }
+        .modal-sidebar {
+            width: 30%;
+            background-color: #F3F4F6;
+            border-right: 1px solid #E5E7EB;
+            padding-top: 20px;
+        }
+        .modal-content-area {
+            width: 70%;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        .sidebar-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #4B5563;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-item.active {
+            background-color: white;
+            color: var(--growth-red);
+            border-left-color: var(--growth-red);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white shadow-sm mb-10 py-6">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <img src="https://via.placeholder.com/120x40/000000/ffffff?text=NWB+LOGO" alt="NWB Logo" class="h-10 object-contain">
+            <div class="text-center">
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">RELATÓRIO FINAL</p>
+                <h1 class="text-3xl md:text-4xl font-black italic tracking-tighter text-black">
+                    <span style="color: var(--growth-red);">GROWTH</span> SUPPLEMENTS
+                </h1>
+            </div>
+            <div class="text-right hidden md:block">
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">FEV/2026</p>
+                <p class="text-sm font-bold text-gray-600">Análise de Canal & Marca</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 space-y-12 pb-20">
+
+        <section>
+            <h2 class="section-title">BIG NUMBERS (CONSOLIDADO)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="card text-center py-8">
+                    <div class="text-3xl md:text-5xl font-black text-black mb-1">147.8M+</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Views Totais</div>
+                </div>
+                <div class="card text-center py-8">
+                     <div class="text-3xl md:text-5xl font-black text-black mb-1">4.2M+</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Engajamento Total</div>
+                </div>
+                <div class="card text-center py-8">
+                     <div class="text-3xl md:text-5xl font-black text-black mb-1">316</div>
+                    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">Posts Totais</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3 class="font-bold text-lg mb-6 uppercase text-black">O PROJETO</h3>
+            <div class="text-gray-600 text-lg space-y-6 leading-relaxed">
+                <p>Benchmark aprofundado do ecossistema <strong class="text-black">Growth Supplements</strong>, identificando oportunidades para a NSports/NWB atuar via collabs e novos formatos de conteúdo.</p>
+            </div>
+        </section>
+
+        <section class="card border-l-4 border-gray-800 bg-gray-50">
+            <h3 class="font-bold text-lg mb-4 uppercase text-black">MERCADO & LIFESTYLE</h3>
+            <p class="text-gray-600 text-lg leading-relaxed">
+                O mercado de suplementação virou entretenimento. A oportunidade está na <strong class="text-black">cross-pollination</strong>: conectar o público da Growth (que consome games e podcasts) com o universo do futebol da NWB.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="section-title">CONSUMO DE MARCAS & PRODUTOS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="font-bold text-gray-800 mb-6 uppercase text-sm">Categorias de Consumo</h3>
+                    <div class="space-y-5">
+                        <div class="flex items-center text-sm"><span class="w-24 font-bold text-gray-600">Suplementos</span><div class="flex-1 bg-gray-100 h-2 rounded-full mx-3"><div class="bg-red-600 h-2 rounded-full" style="width: 95%"></div></div><span class="font-bold">95%</span></div>
+                        <div class="flex items-center text-sm"><span class="w-24 font-bold text-gray-600">Moda Fit</span><div class="flex-1 bg-gray-100 h-2 rounded-full mx-3"><div class="bg-black h-2 rounded-full" style="width: 80%"></div></div><span class="font-bold">80%</span></div>
+                        <div class="flex items-center text-sm"><span class="w-24 font-bold text-gray-600">Games/Tech</span><div class="flex-1 bg-gray-100 h-2 rounded-full mx-3"><div class="bg-gray-800 h-2 rounded-full" style="width: 65%"></div></div><span class="font-bold">65%</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="font-bold text-gray-800 mb-6 uppercase text-sm">Marcas Correlacionadas</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 border rounded"><i class="fab fa-apple text-2xl mb-2"></i><div class="font-bold">Apple</div></div>
+                        <div class="bg-gray-50 p-4 border rounded"><i class="fas fa-running text-2xl mb-2"></i><div class="font-bold">Nike</div></div>
+                        <div class="bg-gray-50 p-4 border rounded"><i class="fas fa-gamepad text-2xl mb-2 text-blue-800"></i><div class="font-bold">PlayStation</div></div>
+                        <div class="bg-gray-50 p-4 border rounded"><i class="fas fa-hamburger text-2xl mb-2 text-red-600"></i><div class="font-bold">iFood</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">PERFORMANCE POR PLATAFORMA</h2>
+            <div class="card">
+                <div class="flex border-b border-gray-200 mb-8 overflow-x-auto">
+                    <div class="platform-tab active" onclick="switchPlatform('instagram', this)"><i class="fab fa-instagram mr-2"></i>Instagram</div>
+                    <div class="platform-tab" onclick="switchPlatform('tiktok', this)"><i class="fab fa-tiktok mr-2"></i>TikTok</div>
+                    <div class="platform-tab" onclick="switchPlatform('youtube', this)"><i class="fab fa-youtube mr-2"></i>YouTube</div>
+                </div>
+
+                <div id="platform-content">
+                    <div class="grid grid-cols-3 gap-4 mb-8">
+                        <div class="stat-box">
+                            <div class="text-sm text-gray-500 uppercase font-bold mb-1">Views</div>
+                            <div class="text-2xl font-black" id="plat-views">76.2M</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="text-sm text-gray-500 uppercase font-bold mb-1">Engajamento</div>
+                            <div class="text-2xl font-black" id="plat-engaj">1.3M</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="text-sm text-gray-500 uppercase font-bold mb-1">Posts</div>
+                            <div class="text-2xl font-black" id="plat-posts">113</div>
+                        </div>
+                    </div>
+                    <div class="h-80 w-full"><canvas id="platformLineChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">PERFORMANCE POR FORMATO (SHARE)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="card">
+                    <h3 class="text-center font-bold text-sm uppercase text-gray-600 mb-6 border-b pb-2 border-red-600 w-max mx-auto">Share de Views</h3>
+                    <div class="h-48 relative mb-6"><canvas id="shareViewsChart"></canvas></div>
+                    <div class="flex justify-around text-center text-xs font-bold text-gray-500">
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-600"></span>YouTube (48%)</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-900"></span>Instagram (51%)</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-black"></span>TikTok (1%)</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="text-center font-bold text-sm uppercase text-gray-600 mb-6 border-b pb-2 border-red-600 w-max mx-auto">Share de Engajamento</h3>
+                    <div class="h-48 relative mb-6"><canvas id="shareEngajChart"></canvas></div>
+                    <div class="flex justify-around text-center text-xs font-bold text-gray-500">
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-600"></span>YouTube (69%)</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-900"></span>Instagram (30%)</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-black"></span>TikTok (1%)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">PERFIL DE CONSUMO (DEMOGRAFIA)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="card flex flex-col justify-center">
+                    <h4 class="text-center font-bold text-sm text-gray-600 mb-6">FAIXA ETÁRIA (CORE: 18-34)</h4>
+                    <div class="space-y-6">
+                        <div class="flex items-center text-sm">
+                            <span class="w-20 font-bold text-gray-500">18 - 24</span>
+                            <div class="flex-1 bg-gray-100 h-3 rounded-full mx-3 relative"><div class="bg-red-600 h-3 rounded-full absolute left-0 top-0" style="width: 37%"></div></div>
+                            <span class="font-black">37%</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-20 font-bold text-gray-500">25 - 34</span>
+                            <div class="flex-1 bg-gray-100 h-3 rounded-full mx-3 relative"><div class="bg-red-600 h-3 rounded-full absolute left-0 top-0" style="width: 42%"></div></div>
+                            <span class="font-black">42%</span>
+                        </div>
+                         <div class="flex items-center text-sm">
+                            <span class="w-20 font-bold text-gray-500">35+</span>
+                            <div class="flex-1 bg-gray-100 h-3 rounded-full mx-3 relative"><div class="bg-gray-300 h-3 rounded-full absolute left-0 top-0" style="width: 21%"></div></div>
+                            <span class="font-black">21%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card flex flex-col items-center justify-center">
+                    <h4 class="text-center font-bold text-sm text-gray-600 mb-6">GÊNERO</h4>
+                    <div class="h-40 w-40 relative">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div class="text-center mt-4 font-bold text-gray-700">88% Masculino</div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2 class="section-title">COLLABS ESTRATÉGICAS (CREATORS)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card p-0 overflow-hidden flex flex-col h-full hoverable border border-transparent">
+                    <div class="bg-gray-100 h-48 flex items-end justify-center pb-0 border-b relative">
+                        <img src="https://via.placeholder.com/300x200/cccccc/333333?text=RENATO+CARIANI" class="object-cover h-full w-full opacity-80">
+                        <div class="absolute bottom-0 w-full bg-gradient-to-t from-black to-transparent p-4"><h3 class="text-white font-black italic uppercase text-xl">RENATO CARIANI</h3></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between text-sm mb-4 border-b pb-2"><span class="text-gray-500">Seguidores:</span><span class="font-bold">12M+</span></div>
+                        <div class="mb-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">AUTORIDADE</span></div>
+                        <p class="text-sm text-gray-600 italic">Defesa: C.E.O. da imagem. Converte e educa a base.</p>
+                    </div>
+                </div>
+                 <div class="card p-0 overflow-hidden flex flex-col h-full hoverable border border-transparent">
+                    <div class="bg-gray-100 h-48 flex items-end justify-center pb-0 border-b relative">
+                        <img src="https://via.placeholder.com/300x200/cccccc/333333?text=FABIO+GIGA" class="object-cover h-full w-full opacity-80">
+                        <div class="absolute bottom-0 w-full bg-gradient-to-t from-black to-transparent p-4"><h3 class="text-white font-black italic uppercase text-xl">FÁBIO GIGA</h3></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between text-sm mb-4 border-b pb-2"><span class="text-gray-500">Seguidores:</span><span class="font-bold">4M+</span></div>
+                        <div class="mb-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">ALCANCE</span></div>
+                        <p class="text-sm text-gray-600 italic">Defesa: Fura bolha com desafios virais.</p>
+                    </div>
+                </div>
+                <div class="card p-0 overflow-hidden flex flex-col h-full hoverable border border-transparent">
+                    <div class="bg-gray-100 h-48 flex items-end justify-center pb-0 border-b relative">
+                        <img src="https://via.placeholder.com/300x200/cccccc/333333?text=LEO+STRONDA" class="object-cover h-full w-full opacity-80">
+                        <div class="absolute bottom-0 w-full bg-gradient-to-t from-black to-transparent p-4"><h3 class="text-white font-black italic uppercase text-xl">LEO STRONDA</h3></div>
+                    </div>
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between text-sm mb-4 border-b pb-2"><span class="text-gray-500">Seguidores:</span><span class="font-bold">6M+</span></div>
+                        <div class="mb-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">LIFESTYLE</span></div>
+                        <p class="text-sm text-gray-600 italic">Defesa: Conecta gerações e vende produtos em receitas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">POSSÍVEIS COLLABS (MARCAS)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card hoverable"><h3 class="font-black text-xl mb-2 text-blue-900">RED BULL</h3><p class="text-sm">Energy & Extreme. Perfeito para desafios físicos.</p></div>
+                <div class="card hoverable"><h3 class="font-black text-xl mb-2 text-blue-800">PLAYSTATION</h3><p class="text-sm">Gaming. Alta sobreposição de público nos momentos de descanso.</p></div>
+                <div class="card hoverable"><h3 class="font-black text-xl mb-2 text-green-600">SPOTIFY</h3><p class="text-sm">Audio & Treino. Playlists oficiais de treino dos atletas.</p></div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">ANÁLISE ESTRATÉGICA</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card relative hoverable border border-transparent cursor-pointer group" onclick="openStrategicModal(0)">
+                    <i class="fas fa-lightbulb absolute top-6 right-6 text-red-200 text-4xl group-hover:text-red-500 transition-colors"></i>
+                    <div class="flex items-center gap-3 mb-6"><h3 class="font-black text-2xl uppercase text-red-600">INSIGHTS (DADOS)</h3></div>
+                    <ul class="space-y-4 text-gray-600 text-sm font-medium">
+                        <li class="flex gap-3"><span class="font-bold text-red-600">01.</span> Retenção 2x maior que a média de mercado em vídeos 20min+.</li>
+                        <li class="flex gap-3"><span class="font-bold text-red-600">02.</span> 35% de Overlap de audiência com canais de Futebol.</li>
+                    </ul>
+                    <div class="mt-8 text-red-600 font-bold text-sm flex items-center uppercase tracking-wider">
+                        Ver análise detalhada <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <div class="card-dark p-6 rounded-lg relative group" onclick="openStrategicModal(3)">
+                    <i class="fas fa-graduation-cap absolute top-6 right-6 text-gray-700 text-4xl group-hover:text-gray-500 transition-colors"></i>
+                    <div class="flex items-center gap-3 mb-6">
+                        <h3 class="font-black text-2xl uppercase text-white">APRENDIZADOS</h3>
+                    </div>
+                    <ul class="space-y-4 text-gray-400 text-sm font-medium">
+                        <li class="flex gap-3"><i class="fas fa-check-circle text-growth-red"></i> A comunidade depende dos Creators (Personas).</li>
+                        <li class="flex gap-3"><i class="fas fa-check-circle text-growth-red"></i> Expandir para Lifestyle (Viagens) aumenta LTV.</li>
+                    </ul>
+                    <div class="mt-12 text-white font-bold text-sm flex items-center uppercase tracking-wider group-hover:underline">
+                        Ver Plano Tático <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 py-10">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center">
+            <img src="https://via.placeholder.com/150x50/111111/666666?text=NWB+FOOTER" alt="Footer Logo" class="h-10 object-contain mb-6 opacity-50">
+            <p class="text-gray-500 text-xs">Produced by NWB for Growth Supplements. Fevereiro 2026.</p>
+        </div>
+    </footer>
+
+    <div id="strategic-modal" class="modal-overlay" onclick="closeStrategicModal()">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold uppercase tracking-wider"><i class="fas fa-chess-knight mr-3 text-red-500"></i>Análise Estratégica</h3>
+                <button onclick="closeStrategicModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-sidebar">
+                    <div class="sidebar-item active" onclick="changeModalContent(0, this)"><i class="fas fa-tv text-red-600 mr-2"></i> TV Growth (Retenção)</div>
+                    <div class="sidebar-item" onclick="changeModalContent(1, this)"><i class="fas fa-users text-blue-600 mr-2"></i> Overlap NWB</div>
+                    <div class="sidebar-item" onclick="changeModalContent(2, this)"><i class="fas fa-chart-line text-green-600 mr-2"></i> Funil de Vendas</div>
+                    <div class="sidebar-item" onclick="changeModalContent(3, this)"><i class="fas fa-clipboard-list text-gray-600 mr-2"></i> Plano Tático</div>
+                </div>
+                <div class="modal-content-area" id="modal-main-content">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.font.family = "'Roboto', sans-serif";
+        const colorRed = '#DA251D';
+        const colorBlack = '#000000';
+        const colorBlue = '#0F172A';
+
+        // 1. DADOS DE PLATAFORMA (DA IMAGEM)
+        const platformData = {
+            instagram: { views: '76.2M', engaj: '1.3M', posts: '113', chartData: [40, 50, 60, 55, 65, 70, 76], color: '#0F172A' },
+            tiktok: { views: '604K', engaj: '39K', posts: '58', chartData: [2, 3, 2, 4, 3, 5, 6], color: '#000000' },
+            youtube: { views: '71M', engaj: '2.9M', posts: '145', chartData: [30, 45, 50, 60, 65, 70, 71], color: '#DA251D' }
+        };
+
+        let currentPlatformChart = null;
+
+        function switchPlatform(plat, tab) {
+            document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const d = platformData[plat];
+            
+            document.getElementById('plat-views').textContent = d.views;
+            document.getElementById('plat-engaj').textContent = d.engaj;
+            document.getElementById('plat-posts').textContent = d.posts;
+
+            const ctx = document.getElementById('platformLineChart').getContext('2d');
+            if (currentPlatformChart) currentPlatformChart.destroy();
+            currentPlatformChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul'],
+                    datasets: [{ data: d.chartData, borderColor: d.color, backgroundColor: d.color+'20', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+            });
+        }
+        
+        // Start with Instagram (Ensure Chart Loads)
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstTab = document.querySelector('.platform-tab');
+            if(firstTab) switchPlatform('instagram', firstTab);
+            changeModalContent(0, document.querySelector('.sidebar-item'));
+        });
+
+        // 2. SHARE CHARTS (CALCULADO: 71M YT vs 76M IG vs 0.6M TK)
+        // Cores: YouTube (Red), Instagram (Blue), TikTok (Black)
+        const shareColors = [colorRed, colorBlue, colorBlack];
+        
+        new Chart(document.getElementById('shareViewsChart'), {
+            type: 'doughnut',
+            data: { labels: ['YouTube', 'Instagram', 'TikTok'], datasets: [{ data: [48, 51.5, 0.5], backgroundColor: shareColors, borderWidth: 0 }] },
+            options: { cutout: '65%', plugins: { legend: { display: false } } }
+        });
+
+        // 2.9M YT vs 1.3M IG vs 39K TK -> YT domina
+        new Chart(document.getElementById('shareEngajChart'), {
+            type: 'doughnut',
+            data: { labels: ['YouTube', 'Instagram', 'TikTok'], datasets: [{ data: [69, 30, 1], backgroundColor: shareColors, borderWidth: 0 }] },
+            options: { cutout: '65%', plugins: { legend: { display: false } } }
+        });
+
+        // 3. GÊNERO (88/12)
+        new Chart(document.getElementById('genderChart'), {
+            type: 'doughnut',
+            data: { labels: ['Masculino', 'Feminino'], datasets: [{ data: [88, 12], backgroundColor: [colorRed, '#eee'], borderWidth: 0 }] },
+            options: { cutout: '75%', plugins: { legend: { display: false } } }
+        });
+
+        // MODAL CONTENT LOGIC
+        function openStrategicModal(index = 0) { 
+            document.getElementById('strategic-modal').style.display = 'flex';
+            const items = document.querySelectorAll('.sidebar-item');
+            if(items[index]) changeModalContent(index, items[index]);
+        }
+        function closeStrategicModal() { document.getElementById('strategic-modal').style.display = 'none'; }
+        
+        const modalContents = [
+            { title: 'O YouTube como "TV Aberta"', text: '<p><strong>Dado:</strong> Retenção média de 42% em vídeos de 20min+.</p><p>A Growth não tem "clientes", tem fãs. O consumo assemelha-se a Netflix. Isso significa que podemos introduzir formatos de 30 a 60 minutos (docs/reality) sem medo de drop-off.</p>' },
+            { title: 'Overlap NWB (Oportunidade)', text: '<p><strong>Dado:</strong> 35% de sobreposição com canais de Futebol.</p><p>O público masculino de 18-34 anos transita entre o "Treino" e o "Jogo". Uma collab entre Fred (Desimpedidos) e Giga não é um teste, é uma conversão quase garantida.</p>' },
+            { title: 'Funil de Vendas (Shorts vs VOD)', text: '<p><strong>Dado:</strong> Shorts gera 70% do alcance novo, mas VOD gera 60% do tráfego para o site.</p><p>Estratégia: Usar Shorts apenas como "Trailer" para levar ao canal principal, onde a venda acontece.</p>' },
+            { title: 'Plano Tático NWB (Aprendizados)', text: '<p><strong>1. Reality Show "Projeto Atleta":</strong> Pegar um influenciador de futebol sedentário e fazer uma transformação de 90 dias com a Growth.</p><p><strong>2. Desafio Cross-Sport:</strong> Giga tentando ser goleiro, Cariani comentando a física de um chute do Roberto Carlos.</p>' }
+        ];
+
+        function changeModalContent(idx, el) {
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            const data = modalContents[idx];
+            document.getElementById('modal-main-content').innerHTML = `<h2 class="text-3xl font-black text-red-600 mb-6 uppercase">${data.title}</h2><div class="space-y-4 text-gray-600 leading-relaxed text-lg">${data.text}</div>`;
+        }
+    </script>
+</body>
+</html>
